@@ -49,9 +49,8 @@
     "uglify-js": "^3.1.3"
   },
   "dependencies": {
-    "@fav/arith.number": "^0.1.1",
-    "@fav/arith.reduce": "^0.1.0",
-    "@fav/math.gcd": "^0.1.0"
+    "@fav/arith.add": "^0.1.1",
+    "@fav/arith.number": "^0.1.1"
   },
   "browserify": {
     "transform": [

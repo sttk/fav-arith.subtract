@@ -2,11 +2,34 @@
 (function (global){
 'use strict';
 
+var ArithNumber = (typeof window !== "undefined" ? window['fav']['arith']['number'] : typeof global !== "undefined" ? global['fav']['arith']['number'] : null);
+var add = require('@fav/arith.add');
+
+function subtract(a1, a2) {
+  a2 = new ArithNumber(-a2.numerator, a2.denominator, a2.exponent);
+  return add(a1, a2);
+}
+
+ArithNumber.prototype.subtract = function(num) {
+  if (num instanceof ArithNumber) {
+    return subtract(this, num);
+  } else {
+    return subtract(this, ArithNumber.of(num));
+  }
+};
+
+module.exports = subtract;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"@fav/arith.add":2}],2:[function(require,module,exports){
+(function (global){
+'use strict';
+
 var gcd = require('@fav/math.gcd');
 var ArithNumber = (typeof window !== "undefined" ? window['fav']['arith']['number'] : typeof global !== "undefined" ? global['fav']['arith']['number'] : null);
 var reduce = require('@fav/arith.reduce');
 
-function subtract(arithNum1, arithNum2) {
+function add(arithNum1, arithNum2) {
   var n1 = arithNum1.numerator;
   var d1 = arithNum1.denominator;
   var e1 = arithNum1.exponent;
@@ -27,34 +50,34 @@ function subtract(arithNum1, arithNum2) {
   if (e1 > e2) {
     n1 *= Math.pow(10, e1 - e2);
     e1 = e2;
-  } else {
+  } else if (e1 < e2) {
     n2 *= Math.pow(10, e2 - e1);
   }
 
-  var a = new ArithNumber(n1 - n2, d1, e1);
+  var a = new ArithNumber(n1 + n2, d1, e1);
   if (a.numerator === a.numerator) {
     return a;
   }
 }
 
-function subtractConsideringLargeNumbers(arithNum1, arithNum2) {
-  return subtract(arithNum1, arithNum2) ||
-         subtract(reduce(arithNum1), reduce(arithNum2)) ||
+function addConsideringLargeNumbers(arithNum1, arithNum2) {
+  return add(arithNum1, arithNum2) ||
+         add(reduce(arithNum1), reduce(arithNum2)) ||
          new ArithNumber(NaN, NaN, NaN);
 }
 
-ArithNumber.prototype.subtract = function(num) {
+ArithNumber.prototype.add = function(num) {
   if (num instanceof ArithNumber) {
-    return subtractConsideringLargeNumbers(this, num);
+    return addConsideringLargeNumbers(this, num);
   } else {
-    return subtractConsideringLargeNumbers(this, ArithNumber.of(num));
+    return addConsideringLargeNumbers(this, ArithNumber.of(num));
   }
 };
 
-module.exports = subtractConsideringLargeNumbers;
+module.exports = addConsideringLargeNumbers;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"@fav/arith.reduce":2,"@fav/math.gcd":3}],2:[function(require,module,exports){
+},{"@fav/arith.reduce":3,"@fav/math.gcd":4}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -100,7 +123,7 @@ ArithNumber.prototype.reduce = function() {
 module.exports = reduce;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"@fav/math.gcd":3}],3:[function(require,module,exports){
+},{"@fav/math.gcd":4}],4:[function(require,module,exports){
 'use strict';
 
 function gcd(x, y) {
