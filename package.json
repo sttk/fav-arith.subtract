@@ -1,6 +1,6 @@
 {
   "name": "@fav/arith.subtract",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Calculates an accurate difference of two numbers.",
   "main": "index.js",
   "files": [
