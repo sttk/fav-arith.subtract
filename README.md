@@ -53,6 +53,7 @@ For Web browsers:
 <script src="fav.arith.number.min.js"></script>
 <script>
 var ArithNumber = fav.arith.number;
+var subtract = fav.arith.subtract;
 
 var num1 = ArithNumber.of(1.23);
 // => { numerator: 123, denominator: 1, exponent: -2 }
