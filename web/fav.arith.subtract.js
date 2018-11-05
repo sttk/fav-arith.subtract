@@ -83,6 +83,7 @@ module.exports = addConsideringLargeNumbers;
 
 var ArithNumber = (typeof window !== "undefined" ? window['fav']['arith']['number'] : typeof global !== "undefined" ? global['fav']['arith']['number'] : null);
 var gcd = require('@fav/math.gcd');
+var NMAX = ArithNumber.MAX_SAFE_NUMERATOR / 10;
 
 function reduce(arithNum) {
   if (!arithNum.isAccurate()) {
@@ -93,6 +94,10 @@ function reduce(arithNum) {
     return new ArithNumber(0, 1, 0);
   }
 
+  if (arithNum.denominator === 1) {
+    return new ArithNumber(arithNum.numerator, 1, arithNum.exponent);
+  }
+
   var n = Math.abs(arithNum.numerator);
   var d = arithNum.denominator;
   var e = arithNum.exponent;
@@ -101,12 +106,23 @@ function reduce(arithNum) {
   n = n / g;
   d = d / g;
 
-  var n10;
-  while (((n10 = n * 10) <= ArithNumber.MAX_SAFE_NUMERATOR) &&
-         (g = gcd(d, 10)) !== 1) {
-    n = n10 / g;
-    d = d / g;
-    e -= 1;
+  while (n < NMAX && e > -ArithNumber.MAX_SAFE_EXPONENT) {
+    var m2 = d % 2,
+        m5 = d % 5;
+    if (m2 === 0 && m5 === 0) {
+      d /= 10;
+      e--;
+    } else if (m2 === 0) {
+      n *= 5;
+      d /= 2;
+      e--;
+    } else if (m5 === 0) {
+      n *= 2;
+      d /= 5;
+      e--;
+    } else {
+      break;
+    }
   }
 
   if (arithNum.numerator < 0) {
